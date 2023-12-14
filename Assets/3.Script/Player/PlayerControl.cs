@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
-public class PlayerControl : MonoBehaviour
+public class PlayerControl : NetworkBehaviour
 {
 	private Animator animator;
 	private Rigidbody rb;
@@ -22,6 +23,11 @@ public class PlayerControl : MonoBehaviour
 
 	private void Start()
 	{
+		if (!isLocalPlayer)
+        {
+			return;
+        }
+
 		animator = GetComponent<Animator>();
 		rb = GetComponent<Rigidbody>();
 		layerMask = ~playerLayer.value;
@@ -29,6 +35,11 @@ public class PlayerControl : MonoBehaviour
 
     private void Update()
     {
+		if (!isLocalPlayer)
+		{
+			return;
+		}
+
 		if (Input.GetKeyDown(KeyCode.Space) && isGround)
 		{
 			animator.SetTrigger("Jump");
@@ -40,6 +51,11 @@ public class PlayerControl : MonoBehaviour
 
     private void FixedUpdate()
 	{
+		if (!isLocalPlayer)
+		{
+			return;
+		}
+
 		float z = Input.GetAxis("Vertical");
 		float x = Input.GetAxis("Horizontal");
 

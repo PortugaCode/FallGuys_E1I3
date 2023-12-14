@@ -5,5 +5,5 @@ using Mirror;
 
 public class RoomPlayerControl : NetworkRoomPlayer
 {
-
+    public bool isRed = false;
 }
