@@ -819,8 +819,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.11009071, y: 0, z: 0, w: 0.9939216}
-  m_LocalPosition: {x: 0, y: 3.44, z: -7}
+  m_LocalRotation: {x: 0.2622461, y: -0.51912284, z: 0.17118739, w: 0.7952568}
+  m_LocalPosition: {x: 2.746375, y: 2.5, z: -1.2072382}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -893,6 +893,7 @@ MonoBehaviour:
   m_CameraActivatedEvent:
     m_PersistentCalls:
       m_Calls: []
+
 --- !u!1 &966127314
 GameObject:
   m_ObjectHideFlags: 0

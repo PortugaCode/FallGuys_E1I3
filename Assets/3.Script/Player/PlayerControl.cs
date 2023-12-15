@@ -14,37 +14,67 @@ public class PlayerControl : NetworkBehaviour
 
 	[Header("IsGround")]
 	public LayerMask playerLayer;
+	private bool isGround;
 
 	[Header("Material")]
 	[SerializeField] private Material redMaterial;
 
-	private bool isGround;
+	[Header("Color")]
+	[SyncVar(hook = nameof(OnColorChanged))]
+	public bool isRed = false;
 
 	private int layerMask;
 
-	private Vector3 targetDirection;
+	private Vector3 rotateDirection;
+	private Vector3 moveDirection;
+
+	private void OnColorChanged(bool _old, bool _new)
+	{
+		isRed = _new;
+
+		PlayerControl[] pcs = FindObjectsOfType<PlayerControl>();
+
+		foreach (PlayerControl pc in pcs)
+		{
+			if (pc.isRed)
+			{
+				var rend = pc.gameObject.GetComponentInChildren<SkinnedMeshRenderer>();
+				Material[] mats = rend.materials;
+				mats[0] = redMaterial;
+				rend.materials = mats;
+			}
+		}
+	}
+
+	public void ChangeColor(bool red)
+	{
+		ChangeColor_Command(red);
+	}
+
+	[Command]
+	public void ChangeColor_Command(bool red)
+	{
+		isRed = red;
+	}
 
 	private void Start()
 	{
-		if (!isLocalPlayer)
+		if (isLocalPlayer)
         {
-			return;
+			animator = GetComponent<Animator>();
+			rb = GetComponent<Rigidbody>();
+			layerMask = ~playerLayer.value;
         }
 
-		if (GameManager.instance.isRed)
-        {
-			var rend = gameObject.GetComponentInChildren<SkinnedMeshRenderer>();
-
-			Material[] mats = rend.materials;
-
-			mats[0] = redMaterial;
-
-			rend.materials = mats;
+		// RoomPlayerClient 오브젝트 비활성화
+		RoomPlayerControl[] rpcs = FindObjectsOfType<RoomPlayerControl>();
+		foreach (RoomPlayerControl rpc in rpcs)
+		{
+			rpc.gameObject.SetActive(false);
 		}
 
-		animator = GetComponent<Animator>();
-		rb = GetComponent<Rigidbody>();
-		layerMask = ~playerLayer.value;
+		// 클라이언트가 생성되어 Start가 호출될 때 마다 isRed값 바꾸고 OnColorChanged에서 머티리얼도 변경
+		ChangeColor(GameManager.instance.isRed);
 	}
 
     private void Update()
@@ -76,12 +106,14 @@ public class PlayerControl : NetworkBehaviour
 		float movement = Mathf.Abs(x) + Mathf.Abs(z);
 		animator.SetFloat("Speed", movement);
 
-		targetDirection = new Vector3(x, 0, z);
+		rotateDirection = new Vector3(x, 0, z);
+
+		moveDirection = Camera.main.transform.forward * z * speed + Camera.main.transform.right * x * speed;
 
 		if (!(x == 0 && z == 0))
         {
-			rb.velocity = new Vector3(x * speed, rb.velocity.y, z * speed);
-			transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(targetDirection), Time.deltaTime * 10.0f);
+			rb.velocity = new Vector3(moveDirection.x, rb.velocity.y, moveDirection.z);
+			transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(rotateDirection), Time.deltaTime * 10.0f);
 		}
 	}
 }
