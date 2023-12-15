@@ -7,11 +7,25 @@ public class SelectTeam : MonoBehaviour
     public void SelectRed()
     {
         GameManager.instance.isRed = true;
-        gameObject.SetActive(false);
+        ChangeColor(GameManager.instance.isRed);
     }
 
     public void SelectBlue()
     {
-        gameObject.SetActive(false);
+        GameManager.instance.isRed = false;
+        ChangeColor(GameManager.instance.isRed);
+    }
+
+    private void ChangeColor(bool isRed)
+    {
+        RoomPlayerControl[] rpcs = FindObjectsOfType<RoomPlayerControl>();
+
+        foreach (RoomPlayerControl rpc in rpcs)
+        {
+            if (rpc.isLocalPlayer)
+            {
+                rpc.ChangeColor(isRed);
+            }
+        }
     }
 }
