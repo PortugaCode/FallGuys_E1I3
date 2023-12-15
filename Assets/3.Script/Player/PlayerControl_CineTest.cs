@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
-public class PlayerControl_CineTest : MonoBehaviour
+public class PlayerControl_CineTest : NetworkBehaviour
 {
 	private Animator animator;
 	private Rigidbody rb;

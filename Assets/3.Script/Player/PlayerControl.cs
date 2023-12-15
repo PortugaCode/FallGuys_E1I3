@@ -10,6 +10,7 @@ public class PlayerControl : NetworkBehaviour
 
 	[Header("Movement")]
 	public float speed = 5.0f;
+	public float rotationSpeed = 10.0f;
 	public float jumpPower = 5.0f;
 
 	[Header("IsGround")]
@@ -19,14 +20,20 @@ public class PlayerControl : NetworkBehaviour
 	[Header("Material")]
 	[SerializeField] private Material redMaterial;
 
+	[Header("Camera")]
+	[SerializeField] private Transform CameraTransform;
+
 	[Header("Color")]
 	[SyncVar(hook = nameof(OnColorChanged))]
 	public bool isRed = false;
 
 	private int layerMask;
 
-	private Vector3 rotateDirection;
+	//private Vector3 rotateDirection;
+
 	private Vector3 moveDirection;
+	private float x;
+	private float z;
 
 	private void OnColorChanged(bool _old, bool _new)
 	{
@@ -64,7 +71,8 @@ public class PlayerControl : NetworkBehaviour
 			animator = GetComponent<Animator>();
 			rb = GetComponent<Rigidbody>();
 			layerMask = ~playerLayer.value;
-        }
+			CameraTransform = Camera.main.transform;
+		}
 
 		// RoomPlayerClient 오브젝트 비활성화
 		RoomPlayerControl[] rpcs = FindObjectsOfType<RoomPlayerControl>();
@@ -84,6 +92,8 @@ public class PlayerControl : NetworkBehaviour
 			return;
 		}
 
+		MyInput();
+
 		if (Input.GetKeyDown(KeyCode.Space) && isGround)
 		{
 			animator.SetTrigger("Jump");
@@ -100,20 +110,50 @@ public class PlayerControl : NetworkBehaviour
 			return;
 		}
 
-		float z = Input.GetAxis("Vertical");
-		float x = Input.GetAxis("Horizontal");
-
+		Move();
+		Rotate();
 		float movement = Mathf.Abs(x) + Mathf.Abs(z);
 		animator.SetFloat("Speed", movement);
+	}
+	private void MyInput()
+	{
+		z = Input.GetAxis("Vertical");
+		x = Input.GetAxis("Horizontal");
+	}
 
-		rotateDirection = new Vector3(x, 0, z);
 
-		moveDirection = Camera.main.transform.forward * z * speed + Camera.main.transform.right * x * speed;
+	private void Move()
+	{
+		moveDirection = CameraTransform.forward * z;
+		moveDirection += CameraTransform.right * x;
+		moveDirection *= speed * Time.deltaTime;
+		moveDirection.y = rb.velocity.y;
 
 		if (!(x == 0 && z == 0))
-        {
-			rb.velocity = new Vector3(moveDirection.x, rb.velocity.y, moveDirection.z);
-			transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(rotateDirection), Time.deltaTime * 10.0f);
+		{
+			//rb.MovePosition(rb.position + moveDirection);
+			rb.velocity = moveDirection;
+		}
+	}
+
+	private void Rotate()
+	{
+		if (!(x == 0 && z == 0))
+		{
+			Vector3 direction = new Vector3(moveDirection.x, 0, moveDirection.z);
+			transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction), Time.deltaTime * rotationSpeed);
+		}
+	}
+
+	private void OnApplicationFocus(bool focus)
+	{
+		if (focus)
+		{
+			Cursor.lockState = CursorLockMode.Locked;
+		}
+		else
+		{
+			Cursor.lockState = CursorLockMode.None;
 		}
 	}
 }

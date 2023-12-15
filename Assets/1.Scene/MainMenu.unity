@@ -650,7 +650,7 @@ MonoBehaviour:
   disconnectInactiveConnections: 0
   disconnectInactiveTimeout: 60
   authenticator: {fileID: 0}
-  playerPrefab: {fileID: 7802569903853192352, guid: 9ed3c276eb64cbf42aee2ec52a09680f, type: 3}
+  playerPrefab: {fileID: 8450212473764753148, guid: 52d0c4661df78a248a6d667a76954d80, type: 3}
   autoCreatePlayer: 1
   playerSpawnMethod: 1
   spawnPrefabs: []
