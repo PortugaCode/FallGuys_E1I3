@@ -5,5 +5,10 @@ using Mirror;
 
 public class RoomPlayerControl : NetworkRoomPlayer
 {
-    public bool isRed = false;
+    public bool isLocal = false;
+
+    private void Update()
+    {
+        isLocal = isLocalPlayer;
+    }
 }

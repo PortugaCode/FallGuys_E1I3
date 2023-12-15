@@ -1321,11 +1321,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ea47378560159346832d8378c713f66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   speed: 5
   jumpPower: 5
   playerLayer:
     serializedVersion: 2
     m_Bits: 128
+  redMaterial: {fileID: 2100000, guid: ab14bd6d8dd18324cb5fd73d86bbd9e4, type: 2}
 --- !u!114 &6230684452933012133
 MonoBehaviour:
   m_ObjectHideFlags: 0

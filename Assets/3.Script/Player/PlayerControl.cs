@@ -15,6 +15,9 @@ public class PlayerControl : NetworkBehaviour
 	[Header("IsGround")]
 	public LayerMask playerLayer;
 
+	[Header("Material")]
+	[SerializeField] private Material redMaterial;
+
 	private bool isGround;
 
 	private int layerMask;
@@ -27,6 +30,17 @@ public class PlayerControl : NetworkBehaviour
         {
 			return;
         }
+
+		if (GameManager.instance.isRed)
+        {
+			var rend = gameObject.GetComponentInChildren<SkinnedMeshRenderer>();
+
+			Material[] mats = rend.materials;
+
+			mats[0] = redMaterial;
+
+			rend.materials = mats;
+		}
 
 		animator = GetComponent<Animator>();
 		rb = GetComponent<Rigidbody>();
