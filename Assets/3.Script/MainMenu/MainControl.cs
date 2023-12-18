@@ -1,17 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MainControl : MonoBehaviour
 {
-    public void CreateRoom()
+    [SerializeField] private InputField inputField;
+
+    public void SaveUserName()
     {
-        var manager = RoomManager.singleton;
-
-        // if 첫 번째 플레이어면 (생성된 방이 없으면)
-        manager.StartHost();
-
-        // if 이미 생성된 방이 있으면
-        //manager.StartClient();
+        GameManager.instance.userName = inputField.text;
     }
 }
