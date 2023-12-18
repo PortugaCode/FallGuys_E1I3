@@ -19,7 +19,12 @@ public class RoomPlayerControl : NetworkRoomPlayer
         StartCoroutine(WaitForIndexChange());
     }
 
-	private void OnColorChanged(bool _old, bool _new)
+    public override void OnClientEnterRoom()
+    {
+        StartCoroutine(WaitForSetPosition());
+    }
+
+    private void OnColorChanged(bool _old, bool _new)
 	{
 		isRed = _new;
 
@@ -57,7 +62,13 @@ public class RoomPlayerControl : NetworkRoomPlayer
 
     private IEnumerator WaitForIndexChange()
     {
-        yield return new WaitForSeconds(0.025f);
+        yield return new WaitForSeconds(0.05f);
         GameManager.instance.SetRoomPosition(gameObject, index);
+    }
+
+    private IEnumerator WaitForSetPosition()
+    {
+        yield return new WaitForSeconds(0.05f);
+        GameManager.instance.ActivateModel();
     }
 }
