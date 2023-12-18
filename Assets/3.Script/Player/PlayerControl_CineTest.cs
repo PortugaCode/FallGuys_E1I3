@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
-public class PlayerControl_CineTest : NetworkBehaviour
+public class PlayerControl_CineTest : MonoBehaviour
 {
 	private Animator animator;
 	private Rigidbody rb;
@@ -46,8 +46,13 @@ public class PlayerControl_CineTest : NetworkBehaviour
 			animator.SetTrigger("Jump");
 			rb.AddForce(Vector3.up * jumpPower, ForceMode.Impulse);
 		}
+		else if (Input.GetKeyUp(KeyCode.Space) && rb.velocity.y > 0.0f)
+		{
+			rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y * 0.45f, rb.velocity.z);
+		}
 
-		isGround = Physics.OverlapSphere(transform.position, 0.05f, layerMask).Length > 0;
+		isGround = Physics.OverlapSphere(transform.position, 0.2f, layerMask).Length > 0;
+		animator.SetBool("Ground", isGround);
 	}
 
 	private void MyInput()
