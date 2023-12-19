@@ -69,6 +69,27 @@ public class RoomPlayerControl : NetworkRoomPlayer
     private IEnumerator WaitForSetPosition()
     {
         yield return new WaitForSeconds(0.05f);
+
+        SendUserName(index, GameManager.instance.userName);
+
         GameManager.instance.ActivateModel();
+    }
+
+    [Client]
+    private void SendUserName(int index, string userName)
+    {
+        SendUserName_Command(index, userName);
+    }
+
+    [Command]
+    private void SendUserName_Command(int index, string userName)
+    {
+        SendUserName_RPC(index, userName);
+    }
+
+    [ClientRpc]
+    private void SendUserName_RPC(int index, string userName)
+    {
+        GameManager.instance.userNames[index] = userName;
     }
 }

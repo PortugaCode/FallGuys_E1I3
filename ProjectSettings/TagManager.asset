@@ -6,6 +6,11 @@ TagManager:
   tags:
   - RoomPlayer
   - Canvas
+  - Water
+  - Goal
+  - NameSave
+  - RoomManager
+  - IndexManager
   layers:
   - Default
   - TransparentFX

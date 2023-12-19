@@ -112,6 +112,8 @@ public class Command : MonoBehaviour
         Debug.Log(count);
         if (count == 12)
         {
+            GetComponent<PlayerControl>().isDev = true;
+            GetComponent<PlayerControl>().speed *= 1.5f;
             Debug.Log("커맨드 입력 성공");
         }
     }

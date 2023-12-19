@@ -8,12 +8,9 @@ public class NameUI : NetworkBehaviour
 {
     private Camera mainCamera;
 
-    [SerializeField] private TextMeshPro nameText;
-
     private void Start()
     {
         mainCamera = Camera.main;
-        nameText.text = GameManager.instance.userName;
     }
 
     private void Update()

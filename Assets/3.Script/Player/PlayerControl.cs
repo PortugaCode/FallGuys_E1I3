@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 using Mirror;
 
 public class PlayerControl : NetworkBehaviour
@@ -27,10 +29,22 @@ public class PlayerControl : NetworkBehaviour
 	[SyncVar(hook = nameof(OnColorChanged))]
 	public bool isRed = false;
 
+	// [UI]
+	private GameObject canvas;
+	public int currentRank = 0;
+	public string userName = string.Empty;
+
+	[Header("Command")]
+	public bool isDev = false;
+	public bool isGoal = false;
+
+	[Header("Index")]
+	[SyncVar(hook = nameof(OnIndexChanged))]
+	public int myIndex = -1;
+
 	private int layerMask;
 
 	//private Vector3 rotateDirection;
-
 	private Vector3 moveDirection;
 	private float x;
 	private float z;
@@ -53,6 +67,18 @@ public class PlayerControl : NetworkBehaviour
 		}
 	}
 
+	private void OnIndexChanged(int _old, int _new)
+    {
+		myIndex = _new;
+
+		GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+
+		foreach(GameObject player in players)
+        {
+			player.transform.GetChild(4).GetComponent<TextMeshPro>().text = GameManager.instance.userNames[player.GetComponent<PlayerControl>().myIndex];
+        }
+    }
+
 	public void ChangeColor(bool red)
 	{
 		ChangeColor_Command(red);
@@ -63,6 +89,17 @@ public class PlayerControl : NetworkBehaviour
 	{
 		isRed = red;
 	}
+
+	public void ChangeIndex(int index)
+    {
+		ChangeIndex_Command(index);
+    }
+
+	[Command]
+	public void ChangeIndex_Command(int index)
+    {
+		myIndex = index;
+    }
 
 	private void Start()
 	{
@@ -80,6 +117,9 @@ public class PlayerControl : NetworkBehaviour
 		{
 			rpc.gameObject.SetActive(false);
 		}
+
+		// 클라이언트가 들어올 때 이름 업데이트하라고 보냄
+		ChangeIndex(GameManager.instance.localIndex);
 
 		// 클라이언트가 생성되어 Start가 호출될 때 마다 isRed값 바꾸고 OnColorChanged에서 머티리얼도 변경
 		ChangeColor(GameManager.instance.isRed);
@@ -99,8 +139,21 @@ public class PlayerControl : NetworkBehaviour
 			animator.SetTrigger("Jump");
 			rb.AddForce(Vector3.up * jumpPower, ForceMode.Impulse);
 		}
+		else if (Input.GetKeyUp(KeyCode.Space) && rb.velocity.y > 0.0f)
+		{
+			rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y * 0.45f, rb.velocity.z);
+		}
 
-		isGround = Physics.OverlapSphere(transform.position, 0.05f, layerMask).Length > 0;
+		if (!isDev)
+        {
+			isGround = Physics.OverlapSphere(transform.position, 0.2f, layerMask).Length > 0;
+		}
+		else
+        {
+			isGround = true;
+        }
+		
+		animator.SetBool("Ground", isGround);
 	}
 
     private void FixedUpdate()
@@ -154,6 +207,57 @@ public class PlayerControl : NetworkBehaviour
 		else
 		{
 			Cursor.lockState = CursorLockMode.None;
+		}
+	}
+
+	[Client]
+	public void Goal(int index)
+    {
+		Goal_Command(index, isRed);
+	}
+
+	[Command]
+	private void Goal_Command(int index, bool isRed)
+    {
+		Goal_RPC(index, isRed);
+    }
+
+	[ClientRpc]
+	private void Goal_RPC(int index, bool isRed)
+    {
+		if (canvas == null)
+		{
+			canvas = GameObject.FindGameObjectWithTag("Canvas");
+		}
+
+		GameObject ui = canvas.transform.GetChild(currentRank).gameObject;
+		ui.SetActive(true);
+		ui.GetComponent<Text>().text = $"{currentRank + 1}등 - {GameManager.instance.userNames[index]}";
+
+		GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+
+		if (isRed)
+        {
+			GameManager.instance.redScore += (10 - currentRank);
+        }
+		else
+        {
+			GameManager.instance.blueScore += (10 - currentRank);
+		}
+
+		int playerCount = 0;
+
+		foreach(GameObject player in players)
+        {
+			player.GetComponent<PlayerControl>().currentRank += 1;
+			playerCount += 1;
+		}
+
+		if (currentRank == playerCount)
+        {
+			GameObject end = canvas.transform.GetChild(9).gameObject;
+			end.SetActive(true);
+			end.GetComponent<Text>().text = $"<게임종료>\n레드팀 : {GameManager.instance.redScore}점\n블루팀 : {GameManager.instance.blueScore}점";
 		}
 	}
 }

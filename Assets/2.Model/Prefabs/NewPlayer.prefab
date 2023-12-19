@@ -1274,6 +1274,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7695167249307388809}
   - component: {fileID: 7695167249307388814}
+  - component: {fileID: 5048960603001302833}
   m_Layer: 0
   m_Name: FreeLookCamera
   m_TagString: Untagged
@@ -1316,8 +1317,8 @@ MonoBehaviour:
   m_StreamingVersion: 20170927
   m_Priority: 10
   m_StandbyUpdate: 2
-  m_LookAt: {fileID: 9083478792468624454}
-  m_Follow: {fileID: 9083478792468624454}
+  m_LookAt: {fileID: 0}
+  m_Follow: {fileID: 0}
   m_CommonLens: 1
   m_Lens:
     FieldOfView: 60
@@ -1399,6 +1400,22 @@ MonoBehaviour:
   - {fileID: 7695167250093054630}
   - {fileID: 7695167249470163548}
   - {fileID: 7695167249825488752}
+--- !u!114 &5048960603001302833
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7695167249307388815}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec8fbbc6d56c92f44a87dd1fe7356b7d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  cam: {fileID: 7695167249307388814}
 --- !u!1 &7695167249470163549
 GameObject:
   m_ObjectHideFlags: 3
@@ -1623,7 +1640,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7695167249825488753}
-  m_LocalRotation: {x: 0.20618585, y: 0.00000001458098, z: -0.000000003072409, w: 0.9785129}
+  m_LocalRotation: {x: 0.20618586, y: 3.8168784e-17, z: -2.9987417e-16, w: 0.9785129}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -2201,6 +2218,7 @@ GameObject:
   - component: {fileID: 3730400542100336456}
   - component: {fileID: 5035862650449461289}
   - component: {fileID: -8904397813275107261}
+  - component: {fileID: 6694302728775121745}
   m_Layer: 7
   m_Name: NewPlayer
   m_TagString: Player
@@ -2257,7 +2275,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: 647af7f8432ed78489356474480ecde7, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
-  m_ApplyRootMotion: 1
+  m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
@@ -2383,6 +2401,21 @@ MonoBehaviour:
   redMaterial: {fileID: 2100000, guid: ab14bd6d8dd18324cb5fd73d86bbd9e4, type: 2}
   CameraTransform: {fileID: 0}
   isRed: 0
+  currentRank: 0
+  userName: 
+--- !u!114 &6694302728775121745
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8450212473764753148}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: edbde1a5aad8ca047883e5c49bb569a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isCommandInsert: 0
 --- !u!1 &8496780923731017743
 GameObject:
   m_ObjectHideFlags: 0
